@@ -1,0 +1,6 @@
+Make weewx send data to twitter:
+https://github.com/weewx/weewx/wiki/Twitter
+
+important: add in weewx.conf to Twitter section:
+post_interval = 600
+default post_interval is 300
