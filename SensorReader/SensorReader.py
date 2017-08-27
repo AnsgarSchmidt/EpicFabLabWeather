@@ -5,6 +5,7 @@ import base64
 import requests
 import grovepi
 import paho.mqtt.client as mqtt
+from grove_i2c_digital_light_sensor import Tsl2561
 import grove_i2c_digital_light_sensor
 
 # phalanx/buzzer <------ IN
@@ -36,9 +37,11 @@ def _on_message(client, userdata, msg):
     print("Mq Received on channel %s -> %s" % (msg.topic, msg.payload))
     # do the buzz here
 
-
 def init_sensors():
-    grove_i2c_digital_light_sensor.init()
+    global TSL2561
+    TSL2561 = Tsl2561()
+    TSL2561._init__(grove_i2c_digital_light_sensor.I2C_SMBUS, grove_i2c_digital_light_sensor.I2C_ADDRESS)
+    #grove_i2c_digital_light_sensor.init()
 
 
 def send_image():
@@ -91,7 +94,7 @@ def publish_humidity_data():
     try:
         dht_sensor = 4
         [temp,humidity] = grovepi.dht(dht_sensor, 1)
-        mymqtt.publish("phalanx/humidity", data)
+        mymqtt.publish("phalanx/humidity", humidity)
         print ("temp =" + str(temp) +  " humidity =" + str(humidity))
     except IOError as e:
         print(e)
@@ -179,7 +182,6 @@ mymqtt.connect("172.26.2.9", 1883)
 mymqtt.loop_start()
 
 init_sensors()
-
 while True:
     try:
         publish_noise_data()
@@ -187,6 +189,7 @@ while True:
         publish_light_data()
         publish_water_data()
         publish_temperature_data()
+	publish_humidity_data()
         publish_particulate_matter()
         publish_detected_airplanes()
         publish_pir_data()
