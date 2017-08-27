@@ -101,3 +101,6 @@ ENV/
 .mypy_cache/
 .DS_Store
 Dashboard/SecureMqtt/passwd.txt
+Dashboard/config.ini
+gateways/config.ini
+SensorReader/config.ini

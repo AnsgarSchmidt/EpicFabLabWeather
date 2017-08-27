@@ -1,0 +1,9 @@
+[intern]
+host = localhost
+port = 1883
+
+[extern]
+host = farfar.away.eu
+port = 1883
+user = petergabriel
+passwd = veryveryverysecret
