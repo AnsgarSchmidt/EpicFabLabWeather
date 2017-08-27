@@ -32,6 +32,7 @@ def _on_intern_message(client, userdata, msg):
         extern_connected = False
         print e
 
+
 def _on_extern_connect(client, userdata, rc, msg):
     #print ("Connected %s with result code %s" % (client, rc))
     #intern.subscribe("#")
