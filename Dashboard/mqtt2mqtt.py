@@ -25,8 +25,12 @@ def _on_intern_disconnect(client, userdata, msg):
 
 def _on_intern_message(client, userdata, msg):
     #print("Mq Received on channel %s -> %s" % (msg.topic, msg.payload))
-    extern.publish(msg.topic, msg.payload)
-
+    try:
+        extern.publish(msg.topic, msg.payload)
+    except Exception as e:
+        global extern_connected
+        extern_connected = False
+        print e
 
 def _on_extern_connect(client, userdata, rc, msg):
     #print ("Connected %s with result code %s" % (client, rc))
@@ -66,7 +70,7 @@ while True:
         if not extern_connected:
             extern.connect(config.get("extern", "host"), int(config.get("extern", "port")))
             extern.loop_start()
-    except Exception as e :
+    except Exception as e:
         print e
 
     time.sleep(10)
