@@ -2,6 +2,7 @@ import time
 import paho.mqtt.client as mqtt
 from Wunderground   import Wunderground
 from OpenWeatherMap import OpenWeatherMap
+from OpenSenseMap import OpenSenseMap
 
 mymqtt    = mqtt.Client("gateways", clean_session=True)
 mydata    = {}
@@ -12,7 +13,6 @@ def _on_connect(client, userdata, rc, msg):
     global connected
     connected = True
     mymqtt.subscribe("#")
-
 
 def _on_disconnect(client, userdata, msg):
     print ("Disconnect %s" % client)
@@ -28,6 +28,9 @@ wunderground.start()
 
 openweathermap = OpenWeatherMap(mydata)
 openweathermap.start()
+
+opensensemap = OpenSenseMap(mydata)
+opensensemap.start()
 
 mymqtt.on_connect    = _on_connect
 mymqtt.on_message    = _on_message
