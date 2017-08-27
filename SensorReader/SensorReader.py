@@ -158,6 +158,19 @@ def publish_particulate_matter():
     except ValueError as e:
         print(e)
 
+
+def publish_detected_airplanes():
+    try:
+        data = json.loads(requests.get("http://localhost:8754/flights.json").content)
+        if data is not None:
+            #print json.dumps(data, indent=4, sort_keys=True)
+            mymqtt.publish("phalanx/detected_airplanes", len(data))
+    except IOError as e:
+        print(e)
+    except ValueError as e:
+        print(e)
+
+
 mymqtt = mqtt.Client("sensors", clean_session=True)
 mymqtt.on_connect    = _on_connect
 mymqtt.on_message    = _on_message
@@ -175,6 +188,7 @@ while True:
         publish_water_data()
         publish_temperature_data()
         publish_particulate_matter()
+        publish_detected_airplanes()
         publish_pir_data()
         send_image()
         time.sleep(10)
