@@ -184,16 +184,16 @@ mymqtt.loop_start()
 init_sensors()
 while True:
     try:
+        send_image()
         publish_noise_data()
         publish_uv_data()
         publish_light_data()
         publish_water_data()
         publish_temperature_data()
-	publish_humidity_data()
+        publish_humidity_data()
         publish_particulate_matter()
         publish_detected_airplanes()
         publish_pir_data()
-        send_image()
         time.sleep(10)
     except KeyboardInterrupt:
         break
