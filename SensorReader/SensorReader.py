@@ -3,9 +3,9 @@ import json
 import time
 import base64
 import requests
-#import grovepi
+import grovepi
 import paho.mqtt.client as mqtt
-#import grove_i2c_digital_light_sensor
+import grove_i2c_digital_light_sensor
 
 # phalanx/buzzer <------ IN
 
@@ -62,19 +62,28 @@ def send_image():
 
 def publish_light_data():
     try:
-        data = grove_i2c_digital_light_sensor.readVisibleLux()
-        mymqtt.publish("phalanx/light_sensor", data)
+        gain=0
+        val = TSL2561.readLux(gain)
+        ambient = val[0]
+        IR = val[1]
+        _ambient = val[2]
+        _IR = val[3]
+        _LUX = val[4]
+        mymqtt.publish("phalanx/visible_light", _LUX)
+	mymqtt.publish("phalanx/ir", IR)
     except IOError as e:
         print(e)
     except ValueError as e:
         print(e)
+    except TypeError as e:
+	print(e)
 
 
 def publish_uv_data():
     try:
         uv_sensor = 1
         data = grovepi.analogRead(uv_sensor)
-        mymqtt.publish("phalanx/uv_sensor", data)
+        mymqtt.publish("phalanx/uv", data)
     except IOError as e:
         print(e)
     except ValueError as e:
@@ -84,8 +93,19 @@ def publish_uv_data():
 def publish_temperature_data():
     try:
         temperature_sensor = 2
-        data = grovepi.analogRead(temperature_sensor)
-        mymqtt.publish("phalanx/temperature_sensor", data)
+        data = float(grovepi.analogRead(temperature_sensor)) / 10
+        mymqtt.publish("phalanx/temperature", data)
+    except IOError as e:
+        print(e)
+    except ValueError as e:
+        print(e)
+
+def publish_humidity_data():
+    try:
+        dht_sensor = 4
+	[temp,humidity] = grovepi.dht(dht_sensor, 1)
+        mymqtt.publish("phalanx/humidity", data)
+	print ("temp =" + str(temp) +  " humidity =" + str(humidity))
     except IOError as e:
         print(e)
     except ValueError as e:
@@ -95,19 +115,30 @@ def publish_temperature_data():
 def publish_water_data():
     try:
         water_sensor = 3
-        data = grovepi.analogRead(water_sensor)
-        mymqtt.publish("phalanx/water_sensor",data)
+        data = 1023 - grovepi.analogRead(water_sensor)
+        mymqtt.publish("phalanx/leaf",data)
     except IOError as e:
         print(e)
     except ValueError as e:
         print(e)
 
 
-def publish_ir_data():
+def publish_pir_data():
     try:
-        ir_sensor=5
-        data = grovepi.analogRead(ir_sensor)
-        mymqtt.publish("phalanx/ir_movement_sensor", data)
+        pir_movement_sensor=8
+        data = grovepi.digitalRead(ir_movement_sensor)
+        if data == 0 or data == 1: # check if reads were 0 or 1 it can be 255 also because of IO Errors so remove those values
+            mymqtt.publish("phalanx/pir", data)
+    except IOError as e:
+        print(e)
+    except ValueError as e:
+        print(e)
+
+def publish_noise_data():
+    try:
+        noise_sensor=0
+        data = grovepi.analogRead(noise_sensor)
+        mymqtt.publish("phalanx/noise", data)
     except IOError as e:
         print(e)
     except ValueError as e:
@@ -150,14 +181,15 @@ mymqtt.loop_start()
 #init_sensors()
 while True:
     #try:
-        #publish_light_data()
-        #publish_uv_data()
-        #publish_temperature_data()
-        #publish_water_data()
-        #publish_ir_data()
+	publish_noise_data()
+        publish_uv_data()
+	publish_light_data()
+	publish_water_data()
+        publish_temperature_data()
         publish_particulate_matter()
-        send_image()
-        _dummy()
+	publish_pir_data()
+        #send_image()
+        #_dummy()
         time.sleep(10)
     #except KeyboardInterrupt:
     #    break
