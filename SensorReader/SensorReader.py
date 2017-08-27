@@ -35,7 +35,12 @@ def _on_disconnect(client, userdata, msg):
 
 def _on_message(client, userdata, msg):
     print("Mq Received on channel %s -> %s" % (msg.topic, msg.payload))
-    # do the buzz here
+    if "phalanx/buzzer" == msg.topic:
+        if "ON" == msg.payload:
+            # do the buzz here
+        else:
+            #switch off
+
 
 def init_sensors():
     global TSL2561
