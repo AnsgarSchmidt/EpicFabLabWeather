@@ -50,7 +50,7 @@ class Wunderground(threading.Thread):
 
         #print url
         response = requests.get(url).content
-        print response
+        #print response
 
     def run(self):
 
