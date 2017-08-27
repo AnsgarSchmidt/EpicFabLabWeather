@@ -22,19 +22,6 @@ import grove_i2c_digital_light_sensor
 # phalanx/tamper
 # phalanx/pir
 
-def _dummy():
-    data = 42.23
-    mymqtt.publish("phalanx/noise", data)
-    mymqtt.publish("phalanx/uv", data)
-    mymqtt.publish("phalanx/ir", data)
-    mymqtt.publish("phalanx/visible_light", data)
-    mymqtt.publish("phalanx/leaf", data)
-    mymqtt.publish("phalanx/dust", data)
-    mymqtt.publish("phalanx/temperature", data)
-    mymqtt.publish("phalanx/humidity", data)
-    mymqtt.publish("phalanx/tamper", data)
-    mymqtt.publish("phalanx/pir", data)
-
 
 def _on_connect(client, userdata, rc, msg):
     print ("Connected %s with result code %s" % (client, rc))
@@ -62,7 +49,7 @@ def send_image():
 
 def publish_light_data():
     try:
-        gain=0
+        gain = 0
         val = TSL2561.readLux(gain)
         ambient = val[0]
         IR = val[1]
@@ -70,13 +57,13 @@ def publish_light_data():
         _IR = val[3]
         _LUX = val[4]
         mymqtt.publish("phalanx/visible_light", _LUX)
-	mymqtt.publish("phalanx/ir", IR)
+        mymqtt.publish("phalanx/ir", IR)
     except IOError as e:
         print(e)
     except ValueError as e:
         print(e)
     except TypeError as e:
-	print(e)
+        print(e)
 
 
 def publish_uv_data():
@@ -103,9 +90,9 @@ def publish_temperature_data():
 def publish_humidity_data():
     try:
         dht_sensor = 4
-	[temp,humidity] = grovepi.dht(dht_sensor, 1)
+        [temp,humidity] = grovepi.dht(dht_sensor, 1)
         mymqtt.publish("phalanx/humidity", data)
-	print ("temp =" + str(temp) +  " humidity =" + str(humidity))
+        print ("temp =" + str(temp) +  " humidity =" + str(humidity))
     except IOError as e:
         print(e)
     except ValueError as e:
@@ -125,8 +112,8 @@ def publish_water_data():
 
 def publish_pir_data():
     try:
-        pir_movement_sensor=8
-        data = grovepi.digitalRead(ir_movement_sensor)
+        pir_movement_sensor = 8
+        data = grovepi.digitalRead(pir_movement_sensor)
         if data == 0 or data == 1: # check if reads were 0 or 1 it can be 255 also because of IO Errors so remove those values
             mymqtt.publish("phalanx/pir", data)
     except IOError as e:
@@ -146,7 +133,7 @@ def publish_noise_data():
 
 
 def publish_particulate_matter():
-    #try:
+    try:
         p1      = 0.0
         p2      = 0.0
         counter = 0
@@ -166,10 +153,10 @@ def publish_particulate_matter():
             p2 = float("{0:.2f}".format(p2))
             mymqtt.publish("phalanx/particulate_matter_10", p1)
             mymqtt.publish("phalanx/particulate_matter_2_5", p2)
-    #except IOError as e:
-    #    print(e)
-    #except ValueError as e:
-    #    print(e)
+    except IOError as e:
+        print(e)
+    except ValueError as e:
+        print(e)
 
 mymqtt = mqtt.Client("sensors", clean_session=True)
 mymqtt.on_connect    = _on_connect
@@ -178,21 +165,21 @@ mymqtt.on_disconnect = _on_disconnect
 mymqtt.connect("172.26.2.9", 1883)
 mymqtt.loop_start()
 
-#init_sensors()
+init_sensors()
+
 while True:
-    #try:
-	publish_noise_data()
+    try:
+        publish_noise_data()
         publish_uv_data()
-	publish_light_data()
-	publish_water_data()
+        publish_light_data()
+        publish_water_data()
         publish_temperature_data()
         publish_particulate_matter()
-	publish_pir_data()
-        #send_image()
-        #_dummy()
+        publish_pir_data()
+        send_image()
         time.sleep(10)
-    #except KeyboardInterrupt:
-    #    break
-    #except:
-    #    print ("Unexpected Error %s" + str(sys.exc_info()[0]))
-    #    time.sleep(100)
+    except KeyboardInterrupt:
+        break
+    except Exception as e:
+        print ("Unexpected Error %s" + str(sys.exc_info()[0]))
+        time.sleep(100)
