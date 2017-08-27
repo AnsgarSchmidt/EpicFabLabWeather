@@ -1,7 +1,38 @@
+import sys
+import json
 import time
-import grovepi
+import requests
+#import grovepi
 import paho.mqtt.client as mqtt
-import grove_i2c_digital_light_sensor
+#import grove_i2c_digital_light_sensor
+
+# phalanx/buzzer <------ IN
+
+# phalanx/noise
+# phalanx/uv
+# phalanx/ir
+# phalanx/visible_light
+# phalanx/leaf
+# phalanx/particulate_matter_10
+# phalanx/particulate_matter_2_5
+# phalanx/dust
+# phalanx/temperature
+# phalanx/humidity
+# phalanx/tamper
+# phalanx/pir
+
+def _dummy():
+    data = 42.23
+    mymqtt.publish("phalanx/noise", data)
+    mymqtt.publish("phalanx/uv", data)
+    mymqtt.publish("phalanx/ir", data)
+    mymqtt.publish("phalanx/visible_light", data)
+    mymqtt.publish("phalanx/leaf", data)
+    mymqtt.publish("phalanx/dust", data)
+    mymqtt.publish("phalanx/temperature", data)
+    mymqtt.publish("phalanx/humidity", data)
+    mymqtt.publish("phalanx/tamper", data)
+    mymqtt.publish("phalanx/pir", data)
 
 
 def _on_connect(client, userdata, rc, msg):
@@ -77,7 +108,7 @@ def publish_ir_data():
 
 
 def publish_particulate_matter():
-    try:
+    #try:
         p1      = 0.0
         p2      = 0.0
         counter = 0
@@ -97,10 +128,10 @@ def publish_particulate_matter():
             p2 = float("{0:.2f}".format(p2))
             mymqtt.publish("phalanx/particulate_matter_10", p1)
             mymqtt.publish("phalanx/particulate_matter_2_5", p2)
-    except IOError as e:
-        print(e)
-    except ValueError as e:
-        print(e)
+    #except IOError as e:
+    #    print(e)
+    #except ValueError as e:
+    #    print(e)
 
 mymqtt = mqtt.Client("sensors", clean_session=True)
 mymqtt.on_connect    = _on_connect
@@ -109,17 +140,19 @@ mymqtt.on_disconnect = _on_disconnect
 mymqtt.connect("172.26.2.9", 1883)
 mymqtt.loop_start()
 
-init_sensors()
+#init_sensors()
 while True:
-    try:
-        publish_light_data()
-        publish_uv_data()
-        publish_temperature_data()
-        publish_water_data()
-        publish_ir_data()
+    #try:
+        #publish_light_data()
+        #publish_uv_data()
+        #publish_temperature_data()
+        #publish_water_data()
+        #publish_ir_data()
         publish_particulate_matter()
+        _dummy()
         time.sleep(10)
-    except KeyboardInterrupt:
-        break
-    except:
-        print ("Unexpected Error" + sys.exc_info()[0])
+    #except KeyboardInterrupt:
+    #    break
+    #except:
+    #    print ("Unexpected Error %s" + str(sys.exc_info()[0]))
+    #    time.sleep(100)
