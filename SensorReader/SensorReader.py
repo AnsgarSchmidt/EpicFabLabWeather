@@ -37,8 +37,10 @@ def _on_message(client, userdata, msg):
     print("Mq Received on channel %s -> %s" % (msg.topic, msg.payload))
     if "phalanx/buzzer" == msg.topic:
         if "ON" == msg.payload:
+            pass
             # do the buzz here
         else:
+            pass
             #switch off
 
 
