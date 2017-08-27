@@ -50,8 +50,11 @@ class Wunderground(threading.Thread):
         url += "&softwaretype=EpicFabLabWeather"
 
         #print url
-        response = requests.get(url).content
-        #print response
+        try:
+            response = requests.get(url).content
+            #print response
+        except Exception as e:
+            print e
 
     def run(self):
 
