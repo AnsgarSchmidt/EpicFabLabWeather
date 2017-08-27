@@ -84,23 +84,13 @@ def publish_uv_data():
     except ValueError as e:
         print(e)
 
-
-def publish_temperature_data():
-    try:
-        temperature_sensor = 2
-        data = float(grovepi.analogRead(temperature_sensor)) / 10
-        mymqtt.publish("phalanx/temperature", data)
-    except IOError as e:
-        print(e)
-    except ValueError as e:
-        print(e)
-
 def publish_humidity_data():
     try:
         dht_sensor = 4
-        [temp,humidity] = grovepi.dht(dht_sensor, 1)
+        sensor_color = 0 # because we have blue sensor, use value 1 for white colored sensor
+        [temp,humidity] = grovepi.dht(dht_sensor, sensor_color)
         mymqtt.publish("phalanx/humidity", humidity)
-        print ("temp =" + str(temp) +  " humidity =" + str(humidity))
+        mymqtt.publish("phalanx/temperature", temp)
     except IOError as e:
         print(e)
     except ValueError as e:
@@ -194,7 +184,6 @@ while True:
         publish_uv_data()
         publish_light_data()
         publish_water_data()
-        publish_temperature_data()
         publish_humidity_data()
         publish_particulate_matter()
         publish_detected_airplanes()
