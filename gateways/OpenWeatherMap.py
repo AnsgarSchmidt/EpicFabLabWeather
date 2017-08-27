@@ -18,7 +18,7 @@ class OpenWeatherMap(threading.Thread):
         if key in self._data:
             return float(self._data[key])
         else:
-            print "error:%s" % key
+            #print "error:%s" % key
             return 0.0
 
     def _sendData(self):
@@ -41,8 +41,11 @@ class OpenWeatherMap(threading.Thread):
 
         #print json.dumps(data, indent=4, sort_keys=True)
         headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
-        response = requests.post(url, data=json.dumps(data), headers=headers)
-        print response
+        try:
+            response = requests.post(url, data=json.dumps(data), headers=headers)
+            # print response
+        except Exception as e:
+            print e
 
     def run(self):
         time.sleep(60)

@@ -171,6 +171,54 @@ weather.addMeasurement('OutTemp', 'weather.outtemp', [
 });
 
 
+weather.addMeasurement('PM2.5', 'weather.pm25', [
+  {
+    units: 'ppm',
+    format: 'float',
+    min: 0,
+    max: 50
+  }
+], {
+  topic: 'phalanx/particulate_matter_2_5'
+});
+
+
+weather.addMeasurement('PM10', 'weather.pm10', [
+  {
+    units: 'ppm',
+    format: 'float',
+    min: 0,
+    max: 50
+  }
+], {
+  topic: 'phalanx/particulate_matter_10'
+});
+
+
+weather.addMeasurement('Leaf', 'weather.leaf', [
+  {
+    units: 'moisture',
+    format: 'int',
+    min: 0,
+    max: 50
+  }
+], {
+  topic: 'phalanx/leaf'
+});
+
+
+weather.addMeasurement('Noise', 'weather.noise', [
+  {
+    units: 'pigs',
+    format: 'int',
+    min: 0,
+    max: 50
+  }
+], {
+  topic: 'phalanx/noise'
+});
+
+
 // Start the server
 var server = new app.Server({
   host: process.env.HOST || 'localhost',
