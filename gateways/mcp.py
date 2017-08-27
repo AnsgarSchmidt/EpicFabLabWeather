@@ -7,6 +7,7 @@ mymqtt    = mqtt.Client("gateways", clean_session=True)
 mydata    = {}
 connected = False
 
+
 def _on_connect(client, userdata, rc, msg):
     print ("Connected %s with result code %s" % (client, rc))
     global connected
@@ -18,6 +19,7 @@ def _on_disconnect(client, userdata, msg):
     print ("Disconnect %s" % client)
     global connected
     connected = False
+
 
 def _on_message(client, userdata, msg):
     #print("Mq Received on channel %s -> %s" % (msg.topic, msg.payload))
