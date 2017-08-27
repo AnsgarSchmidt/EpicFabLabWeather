@@ -1,6 +1,7 @@
 import sys
 import json
 import time
+import base64
 import requests
 #import grovepi
 import paho.mqtt.client as mqtt
@@ -51,6 +52,12 @@ def _on_message(client, userdata, msg):
 
 def init_sensors():
     grove_i2c_digital_light_sensor.init()
+
+
+def send_image():
+    with open("/tmp/webcam.jpg", "rb") as image_file:
+        encoded = base64.b64encode(image_file.read())
+        mymqtt.publish("phalanx/image", encoded)
 
 
 def publish_light_data():
@@ -149,6 +156,7 @@ while True:
         #publish_water_data()
         #publish_ir_data()
         publish_particulate_matter()
+        send_image()
         _dummy()
         time.sleep(10)
     #except KeyboardInterrupt:
