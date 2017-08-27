@@ -12,11 +12,13 @@ intern_connected = False
 
 def _on_intern_connect(client, userdata, rc, msg):
     #print ("Connected %s with result code %s" % (client, rc))
+    global intern_connected
     intern_connected = True
     intern.subscribe("#")
 
 
 def _on_intern_disconnect(client, userdata, msg):
+    global intern_connected
     intern_connected = False
     #print ("Disconnect %s" % client)
 
@@ -29,11 +31,13 @@ def _on_intern_message(client, userdata, msg):
 def _on_extern_connect(client, userdata, rc, msg):
     #print ("Connected %s with result code %s" % (client, rc))
     #intern.subscribe("#")
+    global extern_connected
     extern_connected = True
 
 
 def _on_extern_disconnect(client, userdata, msg):
     #print ("Disconnect %s" % client)
+    global extern_connected
     extern_connected = False
 
 
