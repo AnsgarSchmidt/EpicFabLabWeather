@@ -39,7 +39,7 @@ class OpenSenseMap(threading.Thread):
         if key in self._data:
             return float(self._data[key])
         else:
-            print "error:%s" % key
+            #print "error:%s" % key
             return 0.0
 
     def _sendData(self):
@@ -47,7 +47,7 @@ class OpenSenseMap(threading.Thread):
         for sensor in ["temperature", "wind_speed", "wind_gust", "wind_direction", "pressure", "humidity", "rain_1h", "rain_24h", "dew_point", "humidex", "heat_index"]:
             post_url, data = self._createRequestBody(sensor);
             response = (requests.post(post_url, data=json.dumps(data), headers=headers)).text
-            print response
+            #print response
 
     def run(self):
         time.sleep(60)
