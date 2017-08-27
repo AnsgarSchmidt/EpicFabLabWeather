@@ -1,0 +1,8 @@
+[OpenWeatherMap]
+appid = xxxx
+stationid = xxxxx
+
+[Wunderground]
+id = xxxx
+passwd = xxxxx
+
