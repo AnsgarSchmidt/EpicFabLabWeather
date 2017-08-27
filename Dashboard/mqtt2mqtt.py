@@ -8,16 +8,17 @@ intern = mqtt.Client("Mqtt2Mqtt", clean_session=True)
 extern = mqtt.Client("Mqtt2Mqtt", clean_session=True)
 
 def _on_connect(client, userdata, rc, msg):
-    print ("Connected %s with result code %s" % (client, rc))
+    #print ("Connected %s with result code %s" % (client, rc))
     intern.subscribe("#")
 
 
 def _on_disconnect(client, userdata, msg):
-    print ("Disconnect %s" % client)
+    pass
+    #print ("Disconnect %s" % client)
 
 
 def _on_message(client, userdata, msg):
-    print("Mq Received on channel %s -> %s" % (msg.topic, msg.payload))
+    #print("Mq Received on channel %s -> %s" % (msg.topic, msg.payload))
     extern.publish(msg.topic, msg.payload)
 
 intern.on_connect    = _on_connect
