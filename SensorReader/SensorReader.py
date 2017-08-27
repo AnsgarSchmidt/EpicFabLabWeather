@@ -17,8 +17,10 @@ def _on_message(client, userdata, msg):
     print("Mq Received on channel %s -> %s" % (msg.topic, msg.payload))
     # do the buzz here
 
+
 def init_sensors():
     grove_i2c_digital_light_sensor.init()
+
 
 def publish_light_data():
     try:
@@ -32,17 +34,18 @@ def publish_light_data():
 
 def publish_uv_data():
     try:
-        uv_sensor=1
-	data = grovepi.analogRead(uv_sensor)
+        uv_sensor = 1
+        data = grovepi.analogRead(uv_sensor)
         mymqtt.publish("phalanx/uv_sensor", data)
     except IOError as e:
         print(e)
     except ValueError as e:
         print(e)
 
+
 def publish_temperature_data():
     try:
-        temperature_sensor=2
+        temperature_sensor = 2
         data = grovepi.analogRead(temperature_sensor)
         mymqtt.publish("phalanx/temperature_sensor", data)
     except IOError as e:
@@ -50,21 +53,50 @@ def publish_temperature_data():
     except ValueError as e:
         print(e)
 
+
 def publish_water_data():
     try:
-        water_sensor=3
-	data = grovepi.analogRead(water_sensor)
+        water_sensor = 3
+        data = grovepi.analogRead(water_sensor)
         mymqtt.publish("phalanx/water_sensor",data)
     except IOError as e:
         print(e)
     except ValueError as e:
         print(e)
 
+
 def publish_ir_data():
     try:
-	ir_sensor=5
-	data = grovepi.analogRead(ir_sensor)
+        ir_sensor=5
+        data = grovepi.analogRead(ir_sensor)
         mymqtt.publish("phalanx/ir_movement_sensor", data)
+    except IOError as e:
+        print(e)
+    except ValueError as e:
+        print(e)
+
+
+def publish_particulate_matter():
+    try:
+        p1      = 0.0
+        p2      = 0.0
+        counter = 0
+        data    = json.loads(requests.get("http://api.luftdaten.info/v1/sensor/4337/").content)
+        if data is not None:
+            for entry in data:
+                # print json.dumps(entry, indent=4, sort_keys=True)
+                for sensor in entry['sensordatavalues']:
+                    if sensor['value_type'] == "P1":
+                        p1 += float(sensor['value'])
+                    if sensor['value_type'] == "P2":
+                        p2 += float(sensor['value'])
+                counter += 1
+            p1 /= counter
+            p2 /= counter
+            p1 = float("{0:.2f}".format(p1))
+            p2 = float("{0:.2f}".format(p2))
+            mymqtt.publish("phalanx/particulate_matter_10", p1)
+            mymqtt.publish("phalanx/particulate_matter_2_5", p2)
     except IOError as e:
         print(e)
     except ValueError as e:
@@ -80,12 +112,12 @@ mymqtt.loop_start()
 init_sensors()
 while True:
     try:
-	publish_light_data()
-	publish_uv_data()
-	publish_temperature_data()
-	publish_water_data()
-	publish_ir_data()
-
+        publish_light_data()
+        publish_uv_data()
+        publish_temperature_data()
+        publish_water_data()
+        publish_ir_data()
+        publish_particulate_matter()
         time.sleep(10)
     except KeyboardInterrupt:
         break
