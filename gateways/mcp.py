@@ -2,7 +2,7 @@ import time
 import paho.mqtt.client as mqtt
 from Wunderground   import Wunderground
 from OpenWeatherMap import OpenWeatherMap
-from OpenSenseMap import OpenSenseMap
+from OpenSenseMap   import OpenSenseMap
 
 mymqtt    = mqtt.Client("gateways", clean_session=True)
 mydata    = {}
