@@ -41,6 +41,7 @@ class Wunderground(threading.Thread):
         url += "&indoortempf=%f"    % ((self._getData('davis/inTemp_C'                ) * (9.0/5.0)) + 32)
         url += "&indoorhumidity=%f" %   self._getData('davis/inHumidity'              )
         url += "&AqPM2.5=%f"        %   self._getData('phalanx/particulate_matter_2_5')
+        url += "&AqPM10=%f"         %   self._getData('phalanx/particulate_matter_10' )
         url += "&leafwetness=%f"    %   self._getData('phalanx/leaf'                  )
         url += "&UV=%f"             % ((self._getData('phalanx/uv'                    ) - 60) / 10.0)
         url += "&solarradiation=%f" %   self._getData('phalanx/light_sensor'          )
