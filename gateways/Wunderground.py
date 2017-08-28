@@ -37,7 +37,7 @@ class Wunderground(threading.Thread):
         url += "&tempf=%f"          % ((self._getData('davis/outTemp_C'               ) * (9.0/5.0)) + 32)
         url += "&rainin=%f"         % ( self._getData('davis/hourRain_cm'             ) * 0.393701)
         url += "&dailyrainin=%f"    % ( self._getData('davis/dayRain_cm'              ) * 0.393701)
-        url += "&baromin=%f"        % ( self._getData('davis/barometer_mbar'          ) * 0.0145038)
+        url += "&baromin=%f"        % ( self._getData('davis/barometer_mbar'          ) * 0.029528744140143)
         url += "&indoortempf=%f"    % ((self._getData('davis/inTemp_C'                ) * (9.0/5.0)) + 32)
         url += "&indoorhumidity=%f" %   self._getData('davis/inHumidity'              )
         url += "&AqPM2.5=%f"        %   self._getData('phalanx/particulate_matter_2_5')
